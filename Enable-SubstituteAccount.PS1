@@ -13,7 +13,8 @@ function Format-Obj {
  process {
   [PSCustomObject]@{
    adGuid         = $null
-   days           = $null
+   date           = $null
+   # days           = $null
    submission_id  = $_.submission_id
    samid          = $null
    submissionData = $null
@@ -40,9 +41,11 @@ function Set-SubmissionData ($session) {
 function Set-Variables {
  process {
   # samAccountName : 9725
-  # days = 9720
+  # days = 9720 - no longer used - replaced with date
+  # date = 9726
   $_.samid = ($_.submissionData.Where({ $_.attribute_id -eq 9725 })).value
-  $_.days = ($_.submissionData.Where({ $_.attribute_id -eq 9720 })).value
+  # $_.days = ($_.submissionData.Where({ $_.attribute_id -eq 9720 })).value
+  $_.date = ($_.submissionData.Where({ $_.attribute_id -eq 9726 })).value
   $_
  }
 }
@@ -51,7 +54,7 @@ function Show-Obj { process { Write-Verbose ( '{0},{1}' -f $MyInvocation.MyComma
 
 function Update-ADExpirationDate {
  process {
-  $expireDate = (Get-Date).AddDays($_.days)
+  $expireDate = (Get-Date "$($_.date) 5:00PM")
   $params = @{
    Identity              = $_.adGuid
    AccountExpirationDate = $expireDate
@@ -66,7 +69,7 @@ function Update-ADExpirationDate {
   }
   else {
    $_.status = 'success'
-   Write-Host ('{0},{1},Enabled' -f $MyInvocation.MyCommand.Name, $_.samid) -F Green
+   Write-Host ('{0},{1},Expires:{2}' -f $MyInvocation.MyCommand.Name, $_.samid, $expireDate) -F Green
   }
   $_
  }
