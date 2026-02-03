@@ -12,3 +12,5 @@ logs/*
 /jenkins.ps1
 /params.ps1
 /lib/archive
+/csv
+/insert.ps1

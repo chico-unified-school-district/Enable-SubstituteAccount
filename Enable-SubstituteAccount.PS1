@@ -98,7 +98,6 @@ $dbaInstance = Connect-DbaInstance -SqlInstance $SQLServer -SqlCredential $SQLCr
 
 # LF Forms field ids
 # status = 9722
-
 $accountRequestSql = "SELECT submission_id FROM [cf_bp_data] WHERE attribute_id = 9722 AND value = 'waiting';"
 
 do {
