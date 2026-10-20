@@ -28,7 +28,6 @@ This process enables substitute accounts based on pending requests in SQL and se
 
 ## Parameters
 
-- `DomainControllers` (string[]): Domain controllers for AD session.
 - `ADCredential` (PSCredential): Credential for AD operations.
 - `SQLServer` (string): SQL instance name.
 - `SQLDatabase` (string): Target database.
@@ -40,11 +39,11 @@ This process enables substitute accounts based on pending requests in SQL and se
 
 Run manually:
 
-Enable-SubstituteAccount.PS1 -DomainControllers "dc1","dc2" -ADCredential $adCred -SQLServer "sql01" -SQLDatabase "LFCatalog" -SQLCredential $sqlCred
+Enable-SubstituteAccount.PS1 -ADCredential $adCred -SQLServer "sql01" -SQLDatabase "LFCatalog" -SQLCredential $sqlCred
 
 Dry run:
 
-Enable-SubstituteAccount.PS1 -DomainControllers "dc1","dc2" -ADCredential $adCred -SQLServer "sql01" -SQLDatabase "LFCatalog" -SQLCredential $sqlCred -WhatIf
+Enable-SubstituteAccount.PS1 -ADCredential $adCred -SQLServer "sql01" -SQLDatabase "LFCatalog" -SQLCredential $sqlCred -WhatIf
 
 ## Process flow
 
@@ -57,6 +56,6 @@ Enable-SubstituteAccount.PS1 -DomainControllers "dc1","dc2" -ADCredential $adCre
 
 ## Notes
 
-- The script uses `Get-ADUser` and `Set-ADUser` under a remote AD session created by `Connect-ADSession`.
+- The script uses `Get-ADUser` and `Set-ADUser` from the `ActiveDirectory` module, passing `-ADCredential` as `-Credential`.
 - Status updates and sleep are skipped when `-WhatIf` is used.
 - Errors from AD updates are captured in `adUpdateError` and logged to the console.

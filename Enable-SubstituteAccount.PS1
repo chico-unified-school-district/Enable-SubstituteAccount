@@ -1,6 +1,5 @@
 ﻿[cmdletbinding()]
 param (
- [Parameter(Mandatory = $True)][Alias('DCs')][string[]]$DomainControllers,
  [Parameter(Mandatory = $True)][System.Management.Automation.PSCredential]$ADCredential,
  [Parameter(Mandatory = $True)] [string]$SQLServer,
  [Parameter(Mandatory = $True)][string]$SQLDatabase,
@@ -24,9 +23,9 @@ function Format-Obj {
  }
 }
 
-function Set-AData {
+function Set-AData ([pscredential]$cred) {
  process {
-  $_.ad = Get-ADUser -Identity $_.samid
+  $_.ad = Get-ADUser -Identity $_.samid -Credential $cred
   $_
  }
 }
@@ -93,9 +92,10 @@ function Set-LFStatusField ($session) {
 
 function Show-Obj { process { Write-Verbose ( '{0},{1}' -f $MyInvocation.MyCommand.Name, ($_ | Out-String)) } }
 
-function Update-ADExpirationDate {
+function Update-ADExpirationDate ([pscredential]$cred) {
  process {
   $params = @{
+   Credential            = $cred
    Identity              = $_.ad.ObjectGUID
    AccountExpirationDate = $_.expireDate
    Enabled               = $true
@@ -109,40 +109,34 @@ function Update-ADExpirationDate {
 }
 
 # =============================== Main ==================================
-Import-Module -Name CommonScriptFunctions -Cmdlet Show-TestRun, Show-BlockInfo, Connect-ADSession, Clear-SessionData, New-SqlOperation
+Show-BlockInfo start
+Import-Module -Name CommonScriptFunctions -Cmdlet Show-TestRun, Show-BlockInfo, Clear-SessionData, New-SqlOperation
 Import-Module -Name dbatools -Cmdlet Set-DbatoolsConfig, Invoke-DbaQuery, Connect-DbaInstance
-
-Show-BlockInfo main
+Import-Module -Name ActiveDirectory -Cmdlet Get-ADUser, Set-ADUser
 
 if ($WhatIf) { Show-TestRun }
-
-$adCmdLets = 'Get-ADUser', 'Set-ADUser'
-
-$dbaInstance = Connect-DbaInstance -SqlInstance $SQLServer -SqlCredential $SQLCredential -Database $SQLDatabase
+Show-BlockInfo main
 
 $accountRequestSql = "SELECT submission_id FROM [cf_bp_data] WHERE attribute_id = 9722 AND value = 'waiting';"
+$dbaInstance = Connect-DbaInstance -SqlInstance $SQLServer -SqlCredential $SQLCredential -Database $SQLDatabase
 
 do {
  $subAccountRequests = Invoke-DbaQuery -SqlInstance $dbaInstance -Query $accountRequestSql | ConvertTo-Csv | ConvertFrom-Csv
- if ($subAccountRequests) {
-  Connect-ADSession -DomainControllers $DomainControllers -Cmdlets $adCmdLets -Credential $ADCredential
- }
  $subAccountRequests |
   Format-Obj |
-   Set-SubmissionData $dbaInstance |
+   Set-SubmissionData -session $dbaInstance |
     Set-Samid |
      Set-Date |
       Set-ExpireDate |
-       Set-AData |
-        Update-ADExpirationDate |
+       Set-AData -cred $ADCredential |
+        Update-ADExpirationDate -cred $ADCredential |
          Set-Status |
-          Set-LFStatusField $dbaInstance |
+          Set-LFStatusField -session $dbaInstance |
            Show-Obj
 
- Clear-SessionData
-
- if (!$WhatIf) { Start-Sleep 60 }
-} until ($WhatIf -or ((Get-Date) -ge (Get-Date $StopTime)))
+ if ($WhatIf) { break }
+ Start-Sleep 60
+} until ((Get-Date) -ge (Get-Date $StopTime))
 
 if ($WhatIf) { Show-TestRun }
 Show-BlockInfo end
