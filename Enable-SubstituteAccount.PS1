@@ -112,7 +112,7 @@ function Update-ADExpirationDate ([pscredential]$cred) {
 Show-BlockInfo start
 Import-Module -Name CommonScriptFunctions -Cmdlet Show-TestRun, Show-BlockInfo, Clear-SessionData, New-SqlOperation
 Import-Module -Name dbatools -Cmdlet Set-DbatoolsConfig, Invoke-DbaQuery, Connect-DbaInstance
-Import-Module -Name ActiveDirectory -Cmdlet Get-ADUser, Set-ADUser
+Import-Module -Name ActiveDirectory -Cmdlet Get-ADUser, Set-ADUser -WarningAction SilentlyContinue -ErrorAction Stop
 
 if ($WhatIf) { Show-TestRun }
 Show-BlockInfo main
