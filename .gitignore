@@ -14,3 +14,4 @@ logs/*
 /lib/archive
 /csv
 /insert.ps1
+/notes.sql
