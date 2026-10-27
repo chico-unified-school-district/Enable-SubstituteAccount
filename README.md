@@ -70,8 +70,8 @@ To run one simulated cycle:
 .\Enable-SubstituteAccount.PS1 `
     -ADCredential $adCred `
     -EmailCredential $emailCred `
-    -SQLServer 'sql01' `
-    -SQLDatabase 'LFCatalog' `
+    -SQLServer 'Laserfiche-Sql-Server' `
+    -SQLDatabase 'LF-FORMS' `
     -SQLCredential $sqlCred `
     -WhatIf
 ```
