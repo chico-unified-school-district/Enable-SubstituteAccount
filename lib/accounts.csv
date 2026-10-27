@@ -1,0 +1,63 @@
+Id,del,samAccountName,name,description,siteId,type,dts
+1,NULL,ATCOfficeSub,ATC Sub - Office,Sub account tied to Aeries,29,Office,2026-01-30 12:09:09.863
+2,NULL,BJLibSub,BJ Library Sub,Sub account tied to Aeries,50,Library,2026-01-30 12:09:23.887
+3,NULL,chattsub,CH Sub - Attendance,Disabled 4-30-25 -ZVR | Sub account tied to Aeries,120,Attendance,2026-01-30 12:09:33.280
+4,NULL,chhasub,CH Sub - Health Aide,Sub account tied to Aeries,120,Health Aide,2026-01-30 12:09:41.950
+5,NULL,CHLibSub,CH Sub - Library,Sub account NOT tied to Aeries,120,Library,2026-01-30 12:09:52.990
+6,NULL,chofficesub,CH Sub - Office,Disabled On 4-17-25 per SSteadman | Original Desc: Sub account tied to Aeries,120,Office,2026-01-30 12:09:53.010
+7,NULL,ciattsub,CI Sub - Attendance,Sub account tied to Aeries,130,Attendance,2026-01-30 12:09:53.027
+8,NULL,CILibSub,CI Sub - Library,,130,Library,2026-01-30 12:09:53.060
+9,NULL,ciofficesub,CI Sub - Office,Sub account tied to Aeries,130,Office,2026-01-30 12:09:53.077
+10,NULL,cshasub,CS Sub - Health Aide,Sub account tied to Aeries,10,Health Aide,2026-01-30 12:09:53.100
+11,NULL,csofficesub,CS Sub - Office,Sub account tied to Aeries,10,Office,2026-01-30 12:09:53.133
+12,NULL,ewattsub,EW Sub - Attendance,Sub account tied to Aeries,250,Attendance,2026-01-30 12:09:53.160
+13,NULL,ewhasub,EW Sub - Health Aide,Sub account tied to Aeries,250,Health Aide,2026-01-30 12:09:53.183
+14,NULL,EWLibSub,EW Sub - Library,,250,Library,2026-01-30 12:09:53.213
+15,NULL,ewofficesub,EW Sub - Office,Sub account tied to Aeries,250,Office,2026-01-30 12:09:53.233
+16,NULL,fvattsub,FV Sub - Attendance,Sub account tied to Aeries,30,Attendance,2026-01-30 12:09:53.250
+17,NULL,fvhasub,FV Sub - Health Aide,Sub account tied to Aeries,30,Health Aide,2026-01-30 12:09:53.267
+18,NULL,fvofficesub,FV Sub - Office,Sub account tied to Aeries,30,Office,2026-01-30 12:09:53.310
+19,NULL,hoattsub,HO Sub - Attendance,Sub account tied to Aeries,160,Attendance,2026-01-30 12:09:53.333
+20,NULL,hohasub,HO Sub - Health Aide,Sub account tied to Aeries,160,Health Aide,2026-01-30 12:09:53.360
+21,NULL,HOLibSub,HO Sub - Library,,160,Library,2026-01-30 12:09:53.377
+22,NULL,hoofficesub,HO Sub - Office,Sub account tied to Aeries,160,Office,2026-01-30 12:09:53.400
+23,NULL,jmattsub,JM Sub - Attendance,Sub account tied to Aeries,180,Attendance,2026-01-30 12:09:53.427
+24,NULL,jmhasub,JM Sub - Health Aide,Sub account tied to Aeries,180,Health Aide,2026-01-30 12:09:53.443
+25,NULL,JMLibSub,JM Sub - Library,,180,Library,2026-01-30 12:09:53.467
+26,NULL,jmofficesub,JM Sub - Office,Sub account tied to Aeries,180,Office,2026-01-30 12:09:53.480
+27,NULL,lcattsub,LC Sub - Attendance,Sub account tied to Aeries,230,Attendance,2026-01-30 12:09:53.517
+28,NULL,lchasub,LC Sub - Health Aide,Sub account tied to Aeries,230,Health Aide,2026-01-30 12:09:53.537
+29,NULL,LCLibSub,LC Sub - Library,Sub account NOT tied to Aeries,230,Library,2026-01-30 12:09:53.567
+30,NULL,lcofficesub,LC Sub - Office,Sub account tied to Aeries,230,Office,2026-01-30 12:09:53.600
+31,NULL,lvattsub,LV Sub - Attendance,Sub account tied to Aeries,190,Attendance,2026-01-30 12:09:53.627
+32,NULL,lvhasub,LV Sub - Health Aide,Sub account tied to Aeries,190,Health Aide,2026-01-30 12:09:53.650
+33,NULL,lvofficesub,LV Sub - Office,Sub account tied to Aeries,190,Office,2026-01-30 12:09:53.680
+34,NULL,maattsub,MA Sub - Attendance,Sub account tied to Aeries,200,Attendance,2026-01-30 12:09:53.700
+35,NULL,mahasub,MA Sub - Health Aide,Sub account tied to Aeries,200,Health Aide,2026-01-30 12:09:53.717
+36,NULL,MALibSub,MA Sub - Library,,200,Library,2026-01-30 12:09:53.733
+37,NULL,maofficesub,MA Sub - Office,Sub account tied to Aeries,200,Office,2026-01-30 12:09:53.750
+38,NULL,mjhasub,MJ Sub - Health Aide,Sub account tied to Aeries,70,Health Aide,2026-01-30 12:09:53.763
+39,NULL,mjofficesub,MJ Sub - Office,Sub account tied to Aeries,70,Office,2026-01-30 12:09:53.783
+40,NULL,ndattsub,ND Sub - Attendance,Sub account tied to Aeries,210,Attendance,2026-01-30 12:09:53.810
+41,NULL,ndhasub,ND Sub - Health Aide,Sub account tied to Aeries,210,Health Aide,2026-01-30 12:09:53.827
+42,NULL,NDLibSub,ND Sub - Library,,210,Library,2026-01-30 12:09:53.850
+43,NULL,ndofficesub,ND Sub - Office,Sub account tied to Aeries,210,Office,2026-01-30 12:09:53.877
+44,NULL,paattsub,PA Sub - Attendance,Sub account tied to Aeries,240,Attendance,2026-01-30 12:09:53.893
+45,NULL,pahasub,PA Sub - Health Aide,Sub account tied to Aeries,240,Health Aide,2026-01-30 12:09:53.920
+46,NULL,PALibSub,PA Sub - Library,,240,Library,2026-01-30 12:09:53.943
+47,NULL,paofficesub,PA Sub - Office,Sub account tied to Aeries,240,Office,2026-01-30 12:09:53.960
+48,NULL,pvattsub,PV Sub - Attendance,Sub account tied to Aeries,20,Attendance,2026-01-30 12:09:53.977
+49,NULL,pvhasub,PV Sub - Health Aide,Sub account tied to Aeries,20,Health Aide,2026-01-30 12:09:53.993
+50,NULL,pvofficesub,PV Sub - Office,Sub account tied to Aeries,20,Office,2026-01-30 12:09:54.027
+51,NULL,roattsub,RO Sub - Attendance,Sub account tied to Aeries,260,Attendance,2026-01-30 12:09:54.043
+52,NULL,rohasub,RO Sub - Health Aide,Sub account tied to Aeries,260,Health Aide,2026-01-30 12:09:54.060
+53,NULL,ROLibSub,RO Sub - Library,Sub account NOT tied to Aeries,260,Library,2026-01-30 12:09:54.080
+54,NULL,roofficesub,RO Sub - Office,Sub account tied to Aeries,260,Office,2026-01-30 12:09:54.107
+55,NULL,shattsub,SH Sub - Attendance,Sub account tied to Aeries,270,Attendance,2026-01-30 12:09:54.127
+56,NULL,shhasub,SH Sub - Health Aide,Sub account tied to Aeries,270,Health Aide,2026-01-30 12:09:54.157
+57,NULL,SHLibSub,SH Sub - Library,Sub account NOT tied to Aeries,270,Library,2026-01-30 12:09:54.180
+58,NULL,shofficesub,SH Sub - Office,Sub account tied to Aeries,270,Office,2026-01-30 12:09:54.207
+59,NULL,svattsub,SV Sub - Attendance,Sub account tied to Aeries,280,Attendance,2026-01-30 12:09:54.227
+60,NULL,svhasub,SV Sub - Health Aide,Sub account tied to Aeries,280,Health Aide,2026-01-30 12:09:54.243
+61,NULL,SVLibSub,SV Sub - Library,,280,Library,2026-01-30 12:09:54.260
+62,NULL,svofficesub,SV Sub - Office,Sub account tied to Aeries,280,Office,2026-01-30 12:09:54.280

@@ -1,9 +1,11 @@
 ﻿[cmdletbinding()]
 param (
- [Parameter(Mandatory = $True)][System.Management.Automation.PSCredential]$ADCredential,
- [Parameter(Mandatory = $True)] [string]$SQLServer,
+ [Parameter(Mandatory = $True)][PSCredential]$ADCredential,
+ [Parameter(Mandatory = $False)][string]$Bcc,
+ [Parameter(Mandatory = $True)][PSCredential]$EmailCredential,
+ [Parameter(Mandatory = $True)][string]$SQLServer,
  [Parameter(Mandatory = $True)][string]$SQLDatabase,
- [Parameter(Mandatory = $True)][System.Management.Automation.PSCredential]$SQLCredential,
+ [Parameter(Mandatory = $True)][PSCredential]$SQLCredential,
  [string]$StopTime = '5:00 PM',
  [Alias('wi')][SWITCH]$WhatIf
 )
@@ -15,7 +17,12 @@ function Format-Obj {
    error          = $null
    date           = $null
    expireDate     = $null
+   html           = $null
+   mail           = $null
+   pw             = $null
+   pwURL          = $null
    samid          = $null
+   subMail        = $null
    submissionData = $null
    submissionId   = $_.submission_Id
    status         = $null
@@ -23,14 +30,43 @@ function Format-Obj {
  }
 }
 
-function Set-AData ([pscredential]$cred) {
+function Send-Email {
+ param (
+  [pscredential]$cred,
+  [string]$bcc
+ )
+ process {
+  $params = @{
+   To         = $_.mail
+   From       = '<{0}>' -f $cred.Username
+   Subject    = '{0} CUSD Substitute Account Information - {1}' -f (Get-Date -Format 'MM/dd/yyyy'), $_.samid
+   Html       = $_.html
+   SMTPServer = 'smtp.office365.com'
+   Cred       = $cred
+   UseSSL     = $True
+   Port       = 587
+   WhatIf     = $WhatIf
+   Suppress   = $True
+  }
+  if ($bcc) { $params += @{Bcc = $bcc } }
+  if ($_.subMail) { $params += @{Cc = $_.subMail } }
+
+  Send-EmailMessage @params
+  Write-Verbose ($params | Out-String)
+  $msg = $MyInvocation.MyCommand.name, ($params.To -join ','), $_.subMail, $params.Subject
+  Write-Host ('{0},Recipient: [{1},{2}],Subject: [{3}]' -f $msg) -F Green
+  $_
+ }
+}
+
+function Set-PropAData ([pscredential]$cred) {
  process {
   $_.ad = Get-ADUser -Identity $_.samid -Credential $cred
   $_
  }
 }
 
-function Set-Date {
+function Set-PropDate {
  process {
   # date : attribute id 9726
   $_.date = ($_.submissionData.Where({ $_.attribute_id -eq 9726 })).value
@@ -38,7 +74,7 @@ function Set-Date {
  }
 }
 
-function Set-Status {
+function Set-PropStatus {
  process {
   if ($_.error) {
    $_.status = $_.error
@@ -52,24 +88,72 @@ function Set-Status {
  }
 }
 
-function Set-ExpireDate {
+function Set-PropExpireDate {
  process {
   $_.expireDate = (Get-Date "$($_.date) 5:00PM")
   $_
  }
 }
 
-function Set-SubmissionData ($session) {
+function Set-PropMail {
+ process {
+  $_.mail = $_.submissionData.Where({ $_.attribute_id -eq 9718 }).value
+  $_
+ }
+}
+
+function Set-PropHTML {
+ begin {
+  $base = Get-Content -Path .\html\accountInfo.html -Raw
+  $head = "<style TYPE=`"TEXT/CSS`"><!--`n" + (Get-Content -Path .\html\style.css -Raw) + "`n--></style>"
+  $sig = Get-Content -Path .\html\emailSig.html -Raw
+ }
+ process {
+  $msg = $base -replace 'LOGIN_NAME', $_.samid -replace 'PASSWORD_URL', $_.pwURL -replace 'EXPIRATION_DATE', $_.expireDate
+  $html = ConvertTo-Html -Body $msg -Head $head -PostContent $sig
+  $_.html = $html
+  Write-Verbose ($_.html | Out-String)
+  $_
+ }
+}
+
+function Set-PropPW {
+ process {
+  $_.pw = New-PassPhrase
+  $_
+ }
+}
+
+function Set-PropPwURL {
+ begin {
+  . .\lib\New-PasswordRequestURL.ps1
+ }
+ process {
+  $_.pwURL = if ($WhatIf) { 'https://test.url/{0}' -f $_.pw }
+  else { New-PasswordRequestURL -Password $_.pw -ExpireDays 2 -ExpireViews 5 }
+  $_
+ }
+}
+
+function Set-PropSubMail {
+ process {
+  $_.subMail = $_.submissionData.Where({ $_.attribute_id -eq 10178 }).value
+  $_
+ }
+}
+
+function Set-PropSubmissionData ($session) {
  begin { $sql = 'SELECT * FROM [cf_bp_data] WHERE submission_id = @id;' }
  process {
   $_.submissionData = New-SqlOperation -Server $session -Query $sql -Parameters "id=$($_.submissionId)" |
    ConvertTo-Csv |
     ConvertFrom-Csv
+  # Write-Verbose ($_.submissionData | Out-String)
   $_
  }
 }
 
-function Set-Samid {
+function Set-PropSamid {
  process {
   # samAccountName : attribute id 9725
   $_.samid = ($_.submissionData.Where({ $_.attribute_id -eq 9725 })).value
@@ -108,11 +192,34 @@ function Update-ADExpirationDate ([pscredential]$cred) {
  }
 }
 
+function Update-ADPW ([pscredential]$cred) {
+ process {
+  $securePW = ConvertTo-SecureString -String $_.pw -AsPlainText -Force
+  $params = @{
+   Credential    = $cred
+   Identity      = $_.ad.ObjectGUID
+   NewPassword   = $securePW
+   Reset         = $true
+   Confirm       = $false
+   ErrorVariable = 'adPwError'
+   ErrorAction   = 'Stop'
+   WhatIf        = $WhatIf
+  }
+  Write-Host ('{0},{1}' -f $MyInvocation.MyCommand.Name, $_.samid) -F Magenta
+  Set-ADAccountPassword @params
+  $_.error = if ($adPwError) { $adPwError.Exception.Message }
+  $_
+ }
+}
+
 # =============================== Main ==================================
 Show-BlockInfo start
+Import-Module -Name ActiveDirectory -Cmdlet Get-ADUser, Set-ADUser, Set-ADAccountPassword -WarningAction SilentlyContinue -ErrorAction Stop
 Import-Module -Name CommonScriptFunctions -Cmdlet Show-TestRun, Show-BlockInfo, Clear-SessionData, New-SqlOperation
 Import-Module -Name dbatools -Cmdlet Set-DbatoolsConfig, Invoke-DbaQuery, Connect-DbaInstance
-Import-Module -Name ActiveDirectory -Cmdlet Get-ADUser, Set-ADUser -WarningAction SilentlyContinue -ErrorAction Stop
+Import-Module -Name Mailozaurr -Cmdlet Send-EmailMessage
+
+. .\lib\New-PassPhrase.ps1
 
 if ($WhatIf) { Show-TestRun }
 Show-BlockInfo main
@@ -124,15 +231,22 @@ do {
  $subAccountRequests = Invoke-DbaQuery -SqlInstance $dbaInstance -Query $accountRequestSql | ConvertTo-Csv | ConvertFrom-Csv
  $subAccountRequests |
   Format-Obj |
-   Set-SubmissionData -session $dbaInstance |
-    Set-Samid |
-     Set-Date |
-      Set-ExpireDate |
-       Set-AData -cred $ADCredential |
-        Update-ADExpirationDate -cred $ADCredential |
-         Set-Status |
-          Set-LFStatusField -session $dbaInstance |
-           Show-Obj
+   Set-PropSubmissionData -session $dbaInstance |
+    Set-PropSubMail |
+     Set-PropSamid |
+      Set-PropDate |
+       Set-PropExpireDate |
+        Set-PropAData -cred $ADCredential |
+         Set-PropMail |
+          Set-PropPW |
+           Set-PropPwURL |
+            Set-PropHTML |
+             Update-ADExpirationDate -cred $ADCredential |
+              Update-ADPW -cred $ADCredential |
+               Send-Email -cred $EmailCredential -Bcc $Bcc |
+                Set-PropStatus |
+                 Set-LFStatusField -session $dbaInstance |
+                  Show-Obj
 
  if ($WhatIf) { break }
  Start-Sleep 60
