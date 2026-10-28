@@ -139,7 +139,7 @@ function Set-PropPwURL {
  }
  process {
   $_.pwURL = if ($WhatIf) { 'https://test.url/{0}' -f $_.pw }
-  else { New-PasswordRequestURL -Password $_.pw -ExpireDays 7 -ExpireViews 5 }
+  else { New-PasswordRequestURL -Password $_.pw -ExpireDays 6 -ExpireViews 5 }
   $_
  }
 }
@@ -208,7 +208,7 @@ function Update-ADPW ([pscredential]$cred) {
    Credential    = $cred
    Identity      = $_.ad.ObjectGUID
    NewPassword   = $securePW
-   Reset         = $true
+   # Reset         = $true
    Confirm       = $false
    ErrorVariable = 'adPwError'
    ErrorAction   = 'Stop'
