@@ -111,9 +111,10 @@ function Set-PropHTML {
  process {
   $passwordLink = '<a href="{0}">Click here for Password</a>' -f [System.Net.WebUtility]::HtmlEncode($_.pwURL)
   $tableData = [ordered]@{
-   'Username:'   = 'Chico\' + $_.samid
-   'Password:'   = 'PASSWORD_LINK'
-   'Expiration:' = Get-Date $_.expireDate -Format 'MMMM dd h:mm tt'
+   # 'Username:' = 'Chico\' + $_.samid
+   'Username:' = $_.samid
+   'Password:' = 'PASSWORD_LINK'
+   'Expires:'  = Get-Date $_.expireDate -Format 'MMMM dd h:mm tt'
   }
   # Convert directly to HTML rows
   $htmlTable = $tableData.GetEnumerator() | Select-Object @{N = 'Sub Login Details'; E = { $_.Key } }, @{N = ' '; E = { $_.Value } } | ConvertTo-Html -Fragment | Out-String
