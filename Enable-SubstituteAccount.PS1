@@ -104,15 +104,23 @@ function Set-PropMail {
 
 function Set-PropHTML {
  begin {
-  $base = Get-Content -Path .\html\accountInfo.html -Raw
   $head = "<style TYPE=`"TEXT/CSS`"><!--`n" + (Get-Content -Path .\html\style.css -Raw) + "`n--></style>"
+  $pre = Get-Content -Path .\html\accountInfo.html -Raw
   $sig = Get-Content -Path .\html\emailSig.html -Raw
  }
  process {
-  $msg = $base -replace 'LOGIN_NAME', $_.samid -replace 'PASSWORD_URL', $_.pwURL -replace 'EXPIRATION_DATE', $_.expireDate
-  $html = ConvertTo-Html -Body $msg -Head $head -PostContent $sig
+  $passwordLink = '<a href="{0}">Click here for Password</a>' -f [System.Net.WebUtility]::HtmlEncode($_.pwURL)
+  $tableData = [ordered]@{
+   'Username:'   = 'Chico\' + $_.samid
+   'Password:'   = 'PASSWORD_LINK'
+   'Expiration:' = Get-Date $_.expireDate -Format 'MMMM dd h:mm tt'
+  }
+  # Convert directly to HTML rows
+  $htmlTable = $tableData.GetEnumerator() | Select-Object @{N = 'Sub Login Details'; E = { $_.Key } }, @{N = ' '; E = { $_.Value } } | ConvertTo-Html -Fragment | Out-String
+  $htmlTable = $htmlTable -replace 'PASSWORD_LINK', $passwordLink
+  $html = ConvertTo-Html -Body ($pre + $htmlTable) -Head $head -PostContent $sig | Out-String
   $_.html = $html
-  Write-Verbose ($_.html | Out-String)
+  # Write-Verbose ($_.html | Out-String)
   $_
  }
 }

@@ -1,6 +1,25 @@
-body {font-family: Helvetica, Arial, Sans-Serif;}
-table {border: 1px solid black;border-collapse: collapse;}
-th, td {padding: 6px;}
-th {background-color: #348dd8;color: white;text-align: center;}
-tr:nth-child(even) {border: 1px solid black;background: #CCC;text-align: left;}
-tr:nth-child(odd) {background: #FFF;text-align: left;}
+body {
+  font-family: Helvetica, Arial, Sans-Serif;
+}
+table {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th,
+td {
+  padding: 12px;
+}
+th {
+  background-color: #8b674c;
+  color: white;
+  text-align: center;
+}
+tr:nth-child(even) {
+  border: 1px solid black;
+  background: #ccc;
+  text-align: left;
+}
+tr:nth-child(odd) {
+  background: #fff;
+  text-align: left;
+}
