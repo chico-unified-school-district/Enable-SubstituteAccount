@@ -139,7 +139,7 @@ function Set-PropPwURL {
  }
  process {
   $_.pwURL = if ($WhatIf) { 'https://test.url/{0}' -f $_.pw }
-  else { New-PasswordRequestURL -Password $_.pw -ExpireDays 2 -ExpireViews 5 }
+  else { New-PasswordRequestURL -Password $_.pw -ExpireDays 7 -ExpireViews 5 }
   $_
  }
 }
